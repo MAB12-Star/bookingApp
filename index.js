@@ -9,8 +9,8 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const userCalendarId = 'primary'; // Set your calendar ID here
 const bodyParser = require('body-parser');
 const oAuth2Client = new OAuth2Client(
-  '233177828725-7uli5hqddv94lspv1jd5n51u15sop17k.apps.googleusercontent.com',
-  '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'
+  '233177828725-cb8btoaoth90q1va17kb8a6i26lpqkik.apps.googleusercontent.com',
+  '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'
 );
 oAuth2Client.setCredentials({
   refresh_token: '1//041cgSPkATvbICgYIARAAGAQSNwF-L9IrjqPkFJzMJJYOIeq0uxOEU1yD50KrrErNLbIYfdwJKJgfawz_0R7-txLfl9lpQJn4Xfc',

@@ -1,0 +1,140 @@
+#bookingFormContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    border: 2px solid #333; /* Border color */
+    border-radius: 8px; /* Optional: Add rounded corners */
+    background-color: rgba(239, 6, 154, 0.297); /* Transparent background color */
+    width: 300px; /* Set the width of the form container */
+    margin: 0 auto; /* Center the container horizontally */
+}
+
+#bookingFormContainer label {
+    display: block; /* Ensure each label is on a new line */
+    font-weight: bold; /* Make labels bold */
+    margin-bottom: 5px; /* Add space below each label */
+}
+
+#bookingFormContainer input,
+#bookingFormContainer select {
+    margin-bottom: 15px; /* Add more space between form elements */
+    padding: 10px; /* Increased padding for a sleek look */
+    width: calc(100% - 20px); /* Make the inputs and select slightly narrower */
+    box-sizing: border-box; /* Include padding in the width */
+    border: 1px solid #ddd; /* Add a subtle border */
+    border-radius: 4px; /* Optional: Add rounded corners */
+    background-color: #f8f8f8; /* Input background color */
+    transition: border-color 0.3s ease-in-out; /* Add a smooth transition effect for the border color */
+
+    /* Optional: Add a box shadow for depth */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#bookingFormContainer input:focus,
+#bookingFormContainer select:focus {
+    border-color: #1abc9c; /* Change border color on focus */
+    outline: none; /* Remove the default focus outline */
+}
+
+
+
+#bookingFormContainer button {
+    background-color: #1abc9c; /* Button background color */
+    color: white; /* Button text color */
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+
+#sheet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(5, 5, 5); /* Adjust the opacity (last value) as needed */
+}
+
+#bgvideo {
+    object-fit: cover;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+
+main {
+    position: relative;
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    align-items: center;    
+    justify-content: center;
+}
+
+#main {
+    width: 50%;
+    margin: 0 auto;
+}
+
+body {
+    font-family: 'Urbanist', sans-serif;
+    text-align: center;
+    font-weight: 100;
+}
+h1 {
+    color: #1abc9c;
+    font-size: 6em;
+    font-weight: 100;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+p{
+    font-size: 2em;
+    color:white;
+}
+#logo {
+    max-width: 60%;
+}
+
+#hero form {
+    max-width: 700px;
+    margin:0 auto;
+}
+#hero input {
+    background-color: #dfe6e9;
+    border: nonne;
+    padding: 1em;
+    width: 50%;
+    margin: 0;
+    font-size:1em;
+}
+#hero button {
+    background-color: #1abc9c;
+    padding:1em;
+    width: 30%;
+    margin: 0;
+    color: white;
+    outline:none;
+    border: none;
+    font-size: 1em;
+}
+
+#error {
+    color: #ff6b6b;
+    font-size: 1.5em;
+    align-self: self-start;
+}
+
+/* @media screen and (max-width : 1200px) {
+    #hero {
+        width: 100%;
+    }
+} */

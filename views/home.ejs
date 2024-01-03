@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Book With Beetho</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="/home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;300;400&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="sheet">
+        <div id="overlay">
+    <video playsinline autoplay muted loop id="bgvideo">
+        <source src="/hairCut.mp4" type="video/mp4">
+    </video>
+    </div>
+</div>
+    <main>
+        <section id="hero">
+            <img src="laNegra.png" alt="" id="logo">
+            <h1>Book With Beetho</h1>
+            <p>Barber Of The Stars. <br>Book Now, I am soooooo busy</p>
+            <form id="bookingForm" action="/register" method="POST">
+                 <button id="bookAppointmentButton" type="button" onclick="showBookingForm()">Book Appointment</button>
+                <div id="bookingFormContainer" style="display: none;">
+                    <!-- The booking form will be displayed here -->
+                </div>
+            </form>
+        </section>
+    </main>
+    <script>
+        let bookingTimeSelect;
+
+        async function showBookingForm() {
+            const bookingFormContainer = document.getElementById('bookingFormContainer');
+            bookingFormContainer.innerHTML = `
+                <label for="name">Name:</label>
+                <input type="text" name="name" required><br>
+                
+                <label for="email">Email:</label>
+                <input type="email" name="email" required><br>
+                
+                <label for="phone">Phone Number:</label>
+                <input type="tel" name="phone" required><br>
+                
+                <label for="date">Date:</label>
+                <input type="date" name="date" id="bookingDate" required>
+                
+                <select name="time" id="bookingTime" required>
+                    <!-- Available times will be populated dynamically using JavaScript -->
+                </select><br>
+                
+                <button type="submit">Submit</button>
+            `;
+
+            const bookingDateInput = document.getElementById('bookingDate');
+            bookingTimeSelect = document.getElementById('bookingTime');
+
+            bookingDateInput.addEventListener('change', async () => {
+                const selectedDate = bookingDateInput.value;
+                const availableTimes = await fetchAvailableTimes(selectedDate);
+                updateBookingTimeOptions(availableTimes);
+            });
+
+            bookingFormContainer.style.display = 'block';
+        }
+
+        async function fetchAvailableTimes(date) {
+            try {
+                const response = await fetch(`/getAvailableTimes?date=${date}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch available times');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching available times:', error);
+                return [];
+            }
+        }
+
+        function updateBookingTimeOptions(availableTimes) {
+            bookingTimeSelect.innerHTML = '';
+
+            availableTimes.forEach((timeSlot) => {
+                const option = document.createElement('option');
+                option.value = timeSlot.start;
+                option.textContent = `${formatTime(timeSlot.start)} - ${formatTime(timeSlot.end)}`;
+                bookingTimeSelect.appendChild(option);
+            });
+        }
+
+        function formatTime(dateTimeString) {
+            const date = new Date(dateTimeString);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Times</title>
+    <link rel="stylesheet" href="/home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;300;400&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <h2>Available Times</h2>
+    <% if (availableTimes.length > 0) { %>
+        <ul>
+            <% availableTimes.forEach(timeSlot => { %>
+                <li><%= formatTime(timeSlot.start) %> - <%= formatTime(timeSlot.end) %></li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>No available times for the selected date.</p>
+    <% } %>
+
+    <a href="/">Go back to home</a>
+
+    <script>
+        function formatTime(dateTimeString) {
+            const date = new Date(dateTimeString);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+    </script>
+</body>
+
+</html>

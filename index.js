@@ -1,23 +1,24 @@
+
 const express = require('express');
 const app = express();
 const { google } = require('googleapis');
 const { OAuth2Client } = require('google-auth-library');
+const fs = require('fs').promises;
 const path = require('path');
-const bodyParser = require('body-parser');
+const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const userCalendarId = 'primary'; // Set your calendar ID here
-
-
+const bodyParser = require('body-parser');
 const oAuth2Client = new OAuth2Client(
-  '233177828725-feeieui0oojuelvcilsa9p9o5beradrf.apps.googleusercontent.com',
-  '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'
+  '233177828725-7uli5hqddv94lspv1jd5n51u15sop17k.apps.googleusercontent.com',
+  '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'
 );
 oAuth2Client.setCredentials({
-  refresh_token: '1//04gZJtehGKgE4CgYIARAAGAQSNwF-L9IrKzm6UIRC6sILoP63N4D_-oFdbAJbk8uEnLhpNV3o11XpRXpxACJIKklwqtlpDtQGKgE',
+  refresh_token: '1//041cgSPkATvbICgYIARAAGAQSNwF-L9IrjqPkFJzMJJYOIeq0uxOEU1yD50KrrErNLbIYfdwJKJgfawz_0R7-txLfl9lpQJn4Xfc',
 });
 
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views')); // Assuming your views are in a 'views' directory
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -29,14 +30,6 @@ app.get('/', (req, res) => {
 app.get('/getAvailableTimes', async (req, res) => {
   try {
     const date = req.query.date;
-
-    // Check if the access token is expired
-    const isAccessTokenExpired = oAuth2Client.isTokenExpiring();
-    if (isAccessTokenExpired) {
-      const newAccessToken = await refreshAccessToken();
-      oAuth2Client.setCredentials({ access_token: newAccessToken });
-    }
-
     const availableTimes = await getAvailableTimes(date);
     res.json(availableTimes);
   } catch (error) {
@@ -44,19 +37,24 @@ app.get('/getAvailableTimes', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+// Your route for handling form submissions
+// app.post('/register', async (req, res) => {
+//   try {
+//     const date = req.body.date;
 
-// Function to refresh the access token
-async function refreshAccessToken() {
-  try {
-    const { token } = await oAuth2Client.getAccessToken();
-    return token;
-  } catch (error) {
-    console.error('Error refreshing access token:', error);
-    throw error;
-  }
-}
+//     // Fetch available times
+//     const availableTimes = await getAvailableTimes(date);
 
-// Function to get available times for a given date
+//     // Render a page or send a JSON response with available times
+//     res.render('availableTimes', { availableTimes });
+//   } catch (error) {
+//     console.error('Error processing request:', error);
+//     res.status(500).send('Error processing request');
+//   }
+// });
+// Your route for handling form submissions
+
+
 // Function to get available times for a given date
 async function getAvailableTimes(date) {
   try {
@@ -131,17 +129,19 @@ app.post('/register', async (req, res) => {
     const rawStartDateTime = `${startTime.replace(/\.\d+Z/, '')}-00:00`;
     console.log('Raw Start DateTime:', rawStartDateTime);
 
-    // Parse rawStartDateTime to create a valid Date object
-    const startDateTime = new Date(rawStartDateTime);
-    if (isNaN(startDateTime.getTime())) {
-      console.error('Error parsing startDateTime. Invalid date format.');
-      // Handle the error or return a response to the client
-    }
 
-    // Calculate endDateTime by adding 1 hour to startDateTime
-    const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
-    console.log('Formatted End Time:', endDateTime.toISOString());
+// Parse rawStartDateTime to create a valid Date object
+const startDateTime = new Date(rawStartDateTime);
+if (isNaN(startDateTime.getTime())) {
+  console.error('Error parsing startDateTime. Invalid date format.');
+  // Handle the error or return a response to the client
+}
 
+// Calculate endDateTime by adding 1 hour to startDateTime
+const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
+console.log('Formatted End Time:', endDateTime.toISOString());
+
+    
     // Make sure both start and end times are formatted as dateTime
     const event = {
       'summary': summary,
@@ -162,7 +162,11 @@ app.post('/register', async (req, res) => {
           { 'method': 'popup', 'minutes': 10 },
         ],
       },
+
     };
+    
+
+
 
     const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
     // Create the calendar object
@@ -188,6 +192,7 @@ app.post('/register', async (req, res) => {
 
       // Redirect to the confirmation page after successful booking
       res.redirect(`/confirmation?name=${name}&startTime=${startDateTime.toLocaleTimeString('en-US', { timeStyle: 'short' })}`);
+
     });
   } catch (error) {
     console.error('Error processing request:', error);
@@ -208,12 +213,9 @@ app.get('/confirmation', (req, res) => {
   res.render('confirmation', { name, startTime });
 });
 
-// Usage example: call refreshAccessToken() whenever you need to ensure a valid access token
-// const accessToken = await refreshAccessToken();
-
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Error middleware:', err);
+  console.error('Error middleware:', err); // Log the error for debugging
   res.status(err.statusCode).render('error', { err });
 });
 
@@ -222,10 +224,12 @@ app.use((err, req, res, next) => {
     err.statusCode = 500;
     err.message = 'Oh No, Something Went Wrong!';
   }
-  console.error('Error middleware:', err);
+  console.error('Error middleware:', err); // Log the error for debugging
   res.status(err.statusCode).render('error', { err });
 });
 
 app.listen(3000, () => {
   console.log('App is listening on port 3000');
 });
+
+

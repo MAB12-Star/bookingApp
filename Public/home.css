@@ -156,4 +156,13 @@ p{
     p {
         font-size:20px;
     }
+     #bookingFormContainer {
+        width: 100%; /* Set the width to 100% for smaller screens */
+        padding: 10px; /* Adjust padding for smaller screens */
+    }
+
+    #bookingFormContainer input,
+    #bookingFormContainer select {
+        width: 80%;
+    }
 }

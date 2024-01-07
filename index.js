@@ -64,9 +64,8 @@ async function getAvailableTimes(date) {
     // Set timezone explicitly to 'America/Mexico_City' (Central Time Zone)
     const timezone = 'America/Mexico_City';
 
-  const timeMin = new Date(`${date}T05:00:00-06:00`); // Adjusted for UTC+6
-  const timeMax = new Date(`${date}T20:59:59-06:00`); // Adjusted for UTC+6
-
+    const timeMin = new Date(`${date}T05:00:00-06:00`); // Adjusted for UTC+6
+    const timeMax = new Date(`${date}T20:59:59-06:00`); // Adjusted for UTC+6
 
     const response = await calendar.freebusy.query({
       resource: {
@@ -94,32 +93,39 @@ async function getAvailableTimes(date) {
 
         // Check for existing appointments
         const isAvailable = !busyTimes.some(busyTime => (
-          new Date(busyTime.start).toLocaleString("en-US", { timeZone: timezone }) < endTime.toISOString() &&
-          new Date(busyTime.end).toLocaleString("en-US", { timeZone: timezone }) > currentTime.toISOString()
+          new Date(busyTime.start).toLocaleString('en-US', { timeZone: timezone }) < endTime.toISOString() &&
+          new Date(busyTime.end).toLocaleString('en-US', { timeZone: timezone }) > currentTime.toISOString()
         ));
 
         if (isAvailable) {
-          formattedStartTime = `${currentTime.getFullYear()}-${(currentTime.getMonth() + 1)
-  .toString()
-  .padStart(2, '0')}-${currentTime.getDate().toString().padStart(2, '0')}T${currentTime
-  .getHours()
-  .toString()
-  .padStart(2, '0')}:${currentTime.getMinutes().toString().padStart(2, '0')}:${currentTime
-  .getSeconds()
-  .toString()
-  .padStart(2, '0')}`;
+          let formattedStartTime = new Date(
+            `${currentTime.getFullYear()}-${(currentTime.getMonth() + 1)
+              .toString()
+              .padStart(2, '0')}-${currentTime.getDate().toString().padStart(2, '0')}T${currentTime
+              .getHours()
+              .toString()
+              .padStart(2, '0')}:${currentTime.getMinutes().toString().padStart(2, '0')}:${currentTime
+              .getSeconds()
+              .toString()
+              .padStart(2, '0')}`
+          );
 
-formattedEndTime = `${endTime.getFullYear()}-${(endTime.getMonth() + 1)
-  .toString()
-  .padStart(2, '0')}-${endTime.getDate().toString().padStart(2, '0')}T${endTime
-  .getHours()
-  .toString()
-  .padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}:${endTime
-  .getSeconds()
-  .toString()
-  .padStart(2, '0')}`;
+          let formattedEndTime = new Date(
+            `${endTime.getFullYear()}-${(endTime.getMonth() + 1)
+              .toString()
+              .padStart(2, '0')}-${endTime.getDate().toString().padStart(2, '0')}T${endTime
+              .getHours()
+              .toString()
+              .padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}:${endTime
+              .getSeconds()
+              .toString()
+              .padStart(2, '0')}`
+          );
 
-          const timeSlot = { start: formattedStartTime, end: formattedEndTime };
+          formattedStartTime.setHours(formattedStartTime.getHours() + 5);
+          formattedEndTime.setHours(formattedEndTime.getHours() + 5);
+
+          const timeSlot = { start: formattedStartTime.toISOString(), end: formattedEndTime.toISOString() };
           allTimes.push(timeSlot);
         }
       }
@@ -133,6 +139,7 @@ formattedEndTime = `${endTime.getFullYear()}-${(endTime.getMonth() + 1)
     throw error;
   }
 }
+
 
 app.post('/register', async (req, res) => {
   try {

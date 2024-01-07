@@ -1,23 +1,34 @@
 <!DOCTYPE html>
 <html>
- 
+
 <head>
     <title>Book With Beetho</title>
     <link rel="stylesheet" href="/confirmation.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;300;400&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;300;400&display=swap" rel="stylesheet">
 </head>
- 
+
 <body>
     <section id="hero">
-    <img src="/laNegra.png" alt="" id="logo">
-    <h1>Thank You <%= name %>!</h1>
-    <p>We've booked your appointment, please arrive at <%= startTime %>.</p>
-    <p>Please be aware, a no show will cost 200 pesos</p>
-    
+        <img src="/laNegra.png" alt="" id="logo">
+        <h1>Thank You <%= name %>!</h1>
+        <p>We've booked your appointment, please arrive at <%= formatTime(startTime) %>.</p>
+        <p>Please be aware, a no-show will cost 200 pesos</p>
     </section>
+
+    <script>
+        function formatTime(startTime) {
+            // Parse the time string to a Date object
+            const startTimeDate = new Date(startTime);
+
+            // Format the time using options
+            const options = { hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'America/Mexico_City' };
+            const formattedTime = startTimeDate.toLocaleString('en-US', options);
+
+            return formattedTime;
+        }
+    </script>
 </body>
- 
+
 </html>

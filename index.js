@@ -64,8 +64,9 @@ async function getAvailableTimes(date) {
     // Set timezone explicitly to 'America/Mexico_City' (Central Time Zone)
     const timezone = 'America/Mexico_City';
 
-    const timeMin = new Date(`${date}T00:00:00-06:00`); // Assuming -06:00 is the UTC offset for Mexico City
-    const timeMax = new Date(`${date}T23:59:59-06:00`);
+    const timeMin = new Date(`${date}T06:00:00-06:00`); // Adjusted for UTC+6
+const timeMax = new Date(`${date}T29:59:59-06:00`); // Adjusted for UTC+6 (next day)
+
 
     const response = await calendar.freebusy.query({
       resource: {

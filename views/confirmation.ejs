@@ -13,22 +13,11 @@
     <section id="hero">
         <img src="/laNegra.png" alt="" id="logo">
         <h1>Thank You <%= name %>!</h1>
-        <p>We've booked your appointment, please arrive at <%= formatTime(startTime) %>.</p>
-        <p>Please be aware, a no show will cost 200 pesos</p>
+        <p>We've booked your appointment, please arrive at
+            <%= new Date(startTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'America/Mexico_City' }) %>.
+        </p>
+        <p>Please be aware, a no-show will cost 200 pesos</p>
     </section>
-
-    <script>
-        function formatTime(startTime) {
-            // Parse the time string to a Date object
-            const startTimeDate = new Date(startTime);
-
-            // Format the time using options
-            const options = { hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'America/Mexico_City' };
-            const formattedTime = startTimeDate.toLocaleString('en-US', options);
-
-            return formattedTime;
-        }
-    </script>
 </body>
 
 </html>

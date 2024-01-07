@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html>
-
+ 
 <head>
     <title>Book With Beetho</title>
     <link rel="stylesheet" href="/confirmation.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;300;400&display=swap" rel="stylesheet">
-</head>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;300;400&display=swap" rel="stylesheet">
 
+</head>
+ 
 <body>
     <section id="hero">
-        <img src="/laNegra.png" alt="" id="logo">
-        <h1>Thank You <%= name %>!</h1>
-        <p>We've booked your appointment, please arrive at
-            <%= new Date(startTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'America/Mexico_City' }) %>.
-        </p>
-        <p>Please be aware, a no-show will cost 200 pesos</p>
+    <img src="/laNegra.png" alt="" id="logo">
+    <h1>Thank You <%= name %>!</h1>
+    <p>We've booked your appointment, please arrive at <%= startTime %>.</p>
+    <p>Please be aware, a no show will cost 200 pesos</p>
+    
     </section>
 </body>
-
+ 
 </html>
-
 

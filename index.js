@@ -61,20 +61,23 @@ async function refreshAccessToken() {
 async function getAvailableTimes(date) {
   try {
     // Refresh the access token before making the API request
-
     const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
     // Set timezone explicitly to 'America/Mexico_City' (Central Time Zone)
     const timezone = 'America/Mexico_City';
 
-    const timeMin = new Date(`${date}T00:00:00-06:00`); // Assuming -06:00 is the UTC offset for Mexico City
-    const timeMax = new Date(`${date}T23:59:59-06:00`);
+    // Convert date to UTC
+    const utcDate = new Date(`${date}T00:00:00Z`);
+
+    // Convert timeMin and timeMax to UTC
+    const timeMin = new Date(utcDate.getTime());
+    const timeMax = new Date(utcDate.getTime() + 24 * 60 * 60 * 1000 - 1);
 
     const response = await calendar.freebusy.query({
       resource: {
         timeMin: timeMin.toISOString(),
         timeMax: timeMax.toISOString(),
-        timeZone: timezone,
+        timeZone: 'UTC', // Use UTC for the API request
         items: [{ id: userCalendarId }],
       },
     });
@@ -85,17 +88,14 @@ async function getAvailableTimes(date) {
     let currentTime = new Date(timeMin);
 
     while (currentTime <= timeMax) {
-      console.log('Checking availability for:', currentTime);
-
+      // Exclude Sundays, Mondays, and the time range of 11 am to 8 pm
       if (
-        currentTime.getDay() !== 0 && // Exclude Sundays
-        currentTime.getDay() !== 1 && // Exclude Mondays
-        currentTime.getHours() >= 11 && // Include hours from 11 am onwards
-        currentTime.getHours() < 20 // Exclude hours after 8 pm
+        currentTime.getUTCDay() !== 0 && // Exclude Sundays
+        currentTime.getUTCDay() !== 1 && // Exclude Mondays
+        currentTime.getUTCHours() >= 11 && // Include hours from 11 am onwards
+        currentTime.getUTCHours() < 20 // Exclude hours after 8 pm
       ) {
         const endTime = new Date(currentTime.getTime() + 60 * 60 * 1000);
-
-        console.log('Checking availability for time range:', currentTime, 'to', endTime);
 
         // Check for existing appointments
         const isAvailable = !busyTimes.some(busyTime => (
@@ -103,12 +103,15 @@ async function getAvailableTimes(date) {
         ));
 
         if (isAvailable) {
-          const timeSlot = { start: currentTime.toISOString(), end: endTime.toISOString() };
+          const timeSlot = {
+            start: currentTime.toISOString(),
+            end: endTime.toISOString(),
+          };
           allTimes.push(timeSlot);
         }
       }
 
-      currentTime.setHours(currentTime.getHours() + 1);
+      currentTime.setUTCHours(currentTime.getUTCHours() + 1);
     }
 
     return allTimes;

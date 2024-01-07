@@ -56,17 +56,19 @@ async function refreshAccessToken() {
   }
 }
 
+// Function to get available times for a given date
+// Function to get available times for a given date
 async function getAvailableTimes(date) {
   try {
     // Refresh the access token before making the API request
+
     const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
     // Set timezone explicitly to 'America/Mexico_City' (Central Time Zone)
     const timezone = 'America/Mexico_City';
 
-    const timeMin = new Date(`${date}T06:00:00-06:00`); // Adjusted for UTC+6
-    const timeMax = new Date(`${date}T21:59:59-06:00`); // Adjusted for UTC+6
-
+    const timeMin = new Date(`${date}T00:00:00-06:00`); // Assuming -06:00 is the UTC offset for Mexico City
+    const timeMax = new Date(`${date}T23:59:59-06:00`);
 
     const response = await calendar.freebusy.query({
       resource: {
@@ -94,39 +96,11 @@ async function getAvailableTimes(date) {
 
         // Check for existing appointments
         const isAvailable = !busyTimes.some(busyTime => (
-          new Date(busyTime.start).toLocaleString('en-US', { timeZone: timezone }) < endTime.toISOString() &&
-          new Date(busyTime.end).toLocaleString('en-US', { timeZone: timezone }) > currentTime.toISOString()
+          new Date(busyTime.start) < endTime && new Date(busyTime.end) > currentTime
         ));
 
         if (isAvailable) {
-          let formattedStartTime = new Date(
-            `${currentTime.getFullYear()}-${(currentTime.getMonth() + 1)
-              .toString()
-              .padStart(2, '0')}-${currentTime.getDate().toString().padStart(2, '0')}T${currentTime
-              .getHours()
-              .toString()
-              .padStart(2, '0')}:${currentTime.getMinutes().toString().padStart(2, '0')}:${currentTime
-              .getSeconds()
-              .toString()
-              .padStart(2, '0')}`
-          );
-
-          let formattedEndTime = new Date(
-            `${endTime.getFullYear()}-${(endTime.getMonth() + 1)
-              .toString()
-              .padStart(2, '0')}-${endTime.getDate().toString().padStart(2, '0')}T${endTime
-              .getHours()
-              .toString()
-              .padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}:${endTime
-              .getSeconds()
-              .toString()
-              .padStart(2, '0')}`
-          );
-
-          formattedStartTime.setHours(formattedStartTime.getHours() + 5);
-          formattedEndTime.setHours(formattedEndTime.getHours() + 5);
-
-          const timeSlot = { start: formattedStartTime.toISOString(), end: formattedEndTime.toISOString() };
+          const timeSlot = { start: currentTime.toISOString(), end: endTime.toISOString() };
           allTimes.push(timeSlot);
         }
       }

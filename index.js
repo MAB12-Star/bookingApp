@@ -26,6 +26,35 @@ oAuth2Client.setCredentials({
 app.get('/', (req, res) => {
   res.render('home');
 });
+app.get('/getAvailableTimes', async (req, res) => {
+  try {
+    const date = req.query.date;
+
+    // Check if the access token is expired
+    const isAccessTokenExpired = oAuth2Client.isTokenExpiring();
+    if (isAccessTokenExpired) {
+      const newAccessToken = await refreshAccessToken();
+      oAuth2Client.setCredentials({ access_token: newAccessToken });
+    }
+
+    const availableTimes = await getAvailableTimes(date);
+    res.json(availableTimes);
+  } catch (error) {
+    console.error('Error fetching available times:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Function to refresh the access token
+async function refreshAccessToken() {
+  try {
+    const { token } = await oAuth2Client.getAccessToken();
+    return token;
+  } catch (error) {
+    console.error('Error refreshing access token:', error);
+    throw error;
+  }
+}
 
 async function getAvailableTimes(date) {
   try {

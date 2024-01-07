@@ -65,7 +65,8 @@ async function getAvailableTimes(date) {
     const timezone = 'America/Mexico_City';
 
     const timeMin = new Date(`${date}T06:00:00-06:00`); // Adjusted for UTC+6
-    const timeMax = new Date(`${date}T20:59:59-06:00`); // Adjusted for UTC+6
+    const timeMax = new Date(`${date}T21:59:59-06:00`); // Adjusted for UTC+6
+
 
     const response = await calendar.freebusy.query({
       resource: {

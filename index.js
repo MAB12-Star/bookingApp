@@ -58,7 +58,6 @@ async function refreshAccessToken() {
 }
 
 // Function to get available times for a given date
-// Function to get available times for a given date
 async function getAvailableTimes(date) {
   try {
     // Refresh the access token before making the API request
@@ -66,11 +65,10 @@ async function getAvailableTimes(date) {
     const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
     // Set timezone explicitly to 'America/Mexico_City' (Central Time Zone)
-const timezone = 'America/Los_Angeles'; // Pacific Time Zone (Oregon)
+    const timezone = 'America/Mexico_City';
 
-const timeMin = new Date(`${date}T00:00:00-08:00`); // Adjust UTC offset to -08:00 for standard time
-const timeMax = new Date(`${date}T23:59:59-08:00`);
-
+    const timeMin = new Date(`${date}T00:00:00-06:00`); // Assuming -06:00 is the UTC offset for Mexico City
+    const timeMax = new Date(`${date}T23:59:59-06:00`);
 
     const response = await calendar.freebusy.query({
       resource: {
@@ -87,7 +85,8 @@ const timeMax = new Date(`${date}T23:59:59-08:00`);
     let currentTime = new Date(timeMin);
 
     while (currentTime <= timeMax) {
-      // Exclude Sundays, Mondays, and the time range of 11 am to 8 pm
+      console.log('Checking availability for:', currentTime);
+
       if (
         currentTime.getDay() !== 0 && // Exclude Sundays
         currentTime.getDay() !== 1 && // Exclude Mondays
@@ -95,6 +94,8 @@ const timeMax = new Date(`${date}T23:59:59-08:00`);
         currentTime.getHours() < 20 // Exclude hours after 8 pm
       ) {
         const endTime = new Date(currentTime.getTime() + 60 * 60 * 1000);
+
+        console.log('Checking availability for time range:', currentTime, 'to', endTime);
 
         // Check for existing appointments
         const isAvailable = !busyTimes.some(busyTime => (

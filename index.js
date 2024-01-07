@@ -5,17 +5,17 @@ const { OAuth2Client } = require('google-auth-library');
 const path = require('path');
 const bodyParser = require('body-parser');
 const userCalendarId = 'primary'; // Set your calendar ID here
-
+const oAuth2Client = new OAuth2Client(
+  '233177828725-feeieui0oojuelvcilsa9p9o5beradrf.apps.googleusercontent.com',
+  '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'
+);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('Public'));
 
-const oAuth2Client = new OAuth2Client(
-  '233177828725-feeieui0oojuelvcilsa9p9o5beradrf.apps.googleusercontent.com',
-  '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'
-);
+
 oAuth2Client.setCredentials({
   refresh_token: '1//04gZJtehGKgE4CgYIARAAGAQSNwF-L9IrKzm6UIRC6sILoP63N4D_-oFdbAJbk8uEnLhpNV3o11XpRXpxACJIKklwqtlpDtQGKgE',
 });

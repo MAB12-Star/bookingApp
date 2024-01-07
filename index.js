@@ -64,7 +64,7 @@ async function getAvailableTimes(date) {
     // Set timezone explicitly to 'America/Mexico_City' (Central Time Zone)
     const timezone = 'America/Mexico_City';
 
-  const timeMin = new Date(`${date}T06:00:00-06:00`); // Adjusted for UTC+6
+  const timeMin = new Date(`${date}T05:00:00-06:00`); // Adjusted for UTC+6
   const timeMax = new Date(`${date}T20:59:59-06:00`); // Adjusted for UTC+6
 
 

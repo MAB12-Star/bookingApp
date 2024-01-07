@@ -66,10 +66,11 @@ async function getAvailableTimes(date) {
     const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
     // Set timezone explicitly to 'America/Mexico_City' (Central Time Zone)
-    const timezone = 'America/Mexico_City';
+const timezoneOregon = 'America/Los_Angeles'; // Pacific Time Zone (Oregon)
 
-    const timeMin = new Date(`${date}T00:00:00-06:00`); // Assuming -06:00 is the UTC offset for Mexico City
-    const timeMax = new Date(`${date}T23:59:59-06:00`);
+const timeMin = new Date(`${date}T00:00:00-08:00`); // Adjust UTC offset to -08:00 for standard time
+const timeMax = new Date(`${date}T23:59:59-08:00`);
+
 
     const response = await calendar.freebusy.query({
       resource: {

@@ -99,7 +99,26 @@ const timeMax = new Date(`${date}T29:59:59-06:00`); // Adjusted for UTC+6 (next 
         ));
 
         if (isAvailable) {
-          const timeSlot = { start: currentTime.toISOString(), end: endTime.toISOString() };
+          const formattedStartTime = `${currentTime.getFullYear()}-${(currentTime.getMonth() + 1)
+            .toString()
+            .padStart(2, '0')}-${currentTime.getDate().toString().padStart(2, '0')}T${currentTime
+            .getHours()
+            .toString()
+            .padStart(2, '0')}:${currentTime.getMinutes().toString().padStart(2, '0')}:${currentTime
+            .getSeconds()
+            .toString()
+            .padStart(2, '0')}`;
+          const formattedEndTime = `${endTime.getFullYear()}-${(endTime.getMonth() + 1)
+            .toString()
+            .padStart(2, '0')}-${endTime.getDate().toString().padStart(2, '0')}T${endTime
+            .getHours()
+            .toString()
+            .padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}:${endTime
+            .getSeconds()
+            .toString()
+            .padStart(2, '0')}`;
+
+          const timeSlot = { start: formattedStartTime, end: formattedEndTime };
           allTimes.push(timeSlot);
         }
       }

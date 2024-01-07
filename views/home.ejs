@@ -18,26 +18,33 @@
             </video>
         </div>
     </div>
-        <main>
-            <div class="row">
-                <div class="col-sm d-flex align-items-center justify-content-center text-center">
-                    <section id="hero">
-                        <img src="laNegra.png" alt="" id="logo">
-                        <h1>Instagram Link</h1>
-                    </section>
-                    <div class="col-sm">
-                        <h1>Book With Beetho</h1>
-                        <p>Barber Of The Stars. <br>Book Now, I am soooooo busy</p>
-                        <form id="bookingForm" action="/register" method="POST">
-                            <button id="bookAppointmentButton" type="button" onclick="showBookingForm()">Book Appointment</button>
-                            <div id="bookingFormContainer" style="display: none;">
-                                <!-- The booking form will be displayed here -->
-                            </div>
-                        </form>
+    <main class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 d-flex align-items-center justify-content-center text-center">
+                <section id="hero">
+                    <img src="laNegra.png" alt="" id="logo">
+                    <div>
+                        
+                        <!-- Replace the placeholder link with your Instagram link -->
+                        <a href="https://www.instagram.com/beethoskeleton?igshid=N2ViNmM2MDRjNw==" target="_blank"><h3>Follow me on Instagram</h3></a>
                     </div>
+                    
+                </section>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <div class="col-sm">
+                    <h1>Book With Beetho</h1>
+                    <p>Barber Of The Stars. <br>Book Now, I am soooooo busy</p>
+                    <form id="bookingForm" action="/register" method="POST">
+                        <button id="bookAppointmentButton" type="button" onclick="showBookingForm()">Book Appointment</button>
+                        <div id="bookingFormContainer" style="display: none;">
+                            <!-- The booking form will be displayed here -->
+                        </div>
+                    </form>
                 </div>
             </div>
-        </main>
+        </div>
+    </main>
     <script>
         let bookingTimeSelect;
     

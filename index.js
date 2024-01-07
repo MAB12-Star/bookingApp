@@ -27,37 +27,6 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
-app.get('/getAvailableTimes', async (req, res) => {
-  try {
-    const date = req.query.date;
-
-    // Check if the access token is expired
-    const isAccessTokenExpired = oAuth2Client.isTokenExpiring();
-    if (isAccessTokenExpired) {
-      const newAccessToken = await refreshAccessToken();
-      oAuth2Client.setCredentials({ access_token: newAccessToken });
-    }
-
-    const availableTimes = await getAvailableTimes(date);
-    res.json(availableTimes);
-  } catch (error) {
-    console.error('Error fetching available times:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-// Function to refresh the access token
-async function refreshAccessToken() {
-  try {
-    const { token } = await oAuth2Client.getAccessToken();
-    return token;
-  } catch (error) {
-    console.error('Error refreshing access token:', error);
-    throw error;
-  }
-}
-
-// Function to get available times for a given date
 async function getAvailableTimes(date) {
   try {
     // Refresh the access token before making the API request
@@ -66,18 +35,14 @@ async function getAvailableTimes(date) {
     // Set timezone explicitly to 'America/Mexico_City' (Central Time Zone)
     const timezone = 'America/Mexico_City';
 
-    // Convert date to UTC
-    const utcDate = new Date(`${date}T00:00:00Z`);
-
-    // Convert timeMin and timeMax to UTC
-    const timeMin = new Date(utcDate.getTime());
-    const timeMax = new Date(utcDate.getTime() + 24 * 60 * 60 * 1000 - 1);
+    const timeMin = new Date(`${date}T00:00:00-06:00`); // Assuming -06:00 is the UTC offset for Mexico City
+    const timeMax = new Date(`${date}T23:59:59-06:00`);
 
     const response = await calendar.freebusy.query({
       resource: {
         timeMin: timeMin.toISOString(),
         timeMax: timeMax.toISOString(),
-        timeZone: 'UTC', // Use UTC for the API request
+        timeZone: timezone,
         items: [{ id: userCalendarId }],
       },
     });
@@ -90,28 +55,26 @@ async function getAvailableTimes(date) {
     while (currentTime <= timeMax) {
       // Exclude Sundays, Mondays, and the time range of 11 am to 8 pm
       if (
-        currentTime.getUTCDay() !== 0 && // Exclude Sundays
-        currentTime.getUTCDay() !== 1 && // Exclude Mondays
-        currentTime.getUTCHours() >= 11 && // Include hours from 11 am onwards
-        currentTime.getUTCHours() < 20 // Exclude hours after 8 pm
+        currentTime.getDay() !== 0 && // Exclude Sundays
+        currentTime.getDay() !== 1 && // Exclude Mondays
+        currentTime.getHours() >= 11 && // Include hours from 11 am onwards
+        currentTime.getHours() < 20 // Exclude hours after 8 pm
       ) {
         const endTime = new Date(currentTime.getTime() + 60 * 60 * 1000);
 
         // Check for existing appointments
         const isAvailable = !busyTimes.some(busyTime => (
-          new Date(busyTime.start) < endTime && new Date(busyTime.end) > currentTime
+          new Date(busyTime.start).toLocaleString("en-US", { timeZone: timezone }) < endTime.toISOString() &&
+          new Date(busyTime.end).toLocaleString("en-US", { timeZone: timezone }) > currentTime.toISOString()
         ));
 
         if (isAvailable) {
-          const timeSlot = {
-            start: currentTime.toISOString(),
-            end: endTime.toISOString(),
-          };
+          const timeSlot = { start: currentTime.toISOString(), end: endTime.toISOString() };
           allTimes.push(timeSlot);
         }
       }
 
-      currentTime.setUTCHours(currentTime.getUTCHours() + 1);
+      currentTime.setHours(currentTime.getHours() + 1);
     }
 
     return allTimes;

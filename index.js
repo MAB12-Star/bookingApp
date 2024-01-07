@@ -6,6 +6,11 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const userCalendarId = 'primary'; // Set your calendar ID here
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static('Public'));
 
 const oAuth2Client = new OAuth2Client(
   '233177828725-feeieui0oojuelvcilsa9p9o5beradrf.apps.googleusercontent.com',
@@ -16,11 +21,7 @@ oAuth2Client.setCredentials({
 });
 
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(express.static('Public'));
+
 
 app.get('/', (req, res) => {
   res.render('home');
